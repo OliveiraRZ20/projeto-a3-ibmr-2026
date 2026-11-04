@@ -1,6 +1,3 @@
-from tkinter import W
-
-
 class CPF():
     def __init__(self, valor: str) -> None:
         valor_normalizado = self.normalizar(valor)
