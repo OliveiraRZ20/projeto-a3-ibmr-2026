@@ -1,6 +1,6 @@
-# Quantium Black
+# Quantium Bank
 
-Sistema bancário web desenvolvido em Flask como projeto acadêmico de Engenharia de Software. O Quantium Black permite cadastrar usuários, autenticar por CPF, consultar saldo e extrato e realizar transferências entre contas com validações de negócio e consistência transacional.
+Sistema bancário web desenvolvido em Flask como projeto acadêmico de Engenharia de Software. O Quantium Bank permite cadastrar usuários, autenticar por CPF, consultar saldo e extrato e realizar transferências entre contas com validações de negócio e consistência transacional.
 
 ## Funcionalidades
 

@@ -140,7 +140,7 @@ O repositório deve seguir rigorosamente a seguinte estrutura de arquivos e sepa
 20. **Usuários Cadastrados**: Permitir a usuários autenticados consultar a lista de usuários, exibindo CPF integralmente nesta versão demonstrativa; nunca exibir senhas, hashes ou dados secretos.
 21. **Proteção Web**: Implementar CSRF nos formulários, cookies `HttpOnly` e `SameSite`, `Secure` quando executado sob HTTPS, redirecionamento de não autenticados, bloqueio de páginas de autenticação para usuários logados, logout via `POST` e limitação básica de tentativas de login.
 22. **Banco de Dados**: Manter SQLite e o bloqueio de escrita durante transferências; essa escolha é aceitável para a demonstração, mas deve ser reavaliada se a concorrência real superar poucos usuários e poucas solicitações por minuto.
-23. **Apresentação**: Usar português brasileiro, valores monetários no formato `R$ 1.234,56`, identidade visual “Quantium Black”, tema escuro high-tech e cores neon/LED. Priorizar desktop nesta versão, sem exigir otimização específica para celulares.
+23. **Apresentação**: Usar português brasileiro, valores monetários no formato `R$ 1.234,56`, identidade visual “Quantium Bank”, tema escuro high-tech e cores neon/LED. Priorizar desktop nesta versão, sem exigir otimização específica para celulares.
 24. **Testes**: Criar somente testes unitários, sem testes de rotas, cobrindo validação de CPF, política de senha, cadastro, autenticação, CPF duplicado, transferências válidas e inválidas, saldo insuficiente, autotransferência, precisão monetária, rollback e erros de banco.
 
 ---

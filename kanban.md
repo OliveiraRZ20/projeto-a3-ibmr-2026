@@ -1,4 +1,4 @@
-PROJETO: Quantium Black — Sistema Bancário Web
+PROJETO: Quantium Bank — Sistema Bancário Web
 
 EQUIPE:
 - Product Owner (PO): Nathália Granater
@@ -17,7 +17,7 @@ SPRINT 1 — PLANEJAMENTO E ESTRUTURAÇÃO
 Objetivo: definir o produto e preparar a base técnica do projeto.
 
 ATIVIDADES:
-S1-01 — Definir a proposta do Quantium Black
+S1-01 — Definir a proposta do Quantium Bank
 Responsável: PO
 Descrição: Documentar o problema, o público-alvo e as principais funcionalidades do sistema bancário.
 
@@ -47,7 +47,7 @@ Descrição: Criar os diretórios, módulos, templates, arquivos estáticos e es
 
 S1-08 — Criar identidade visual inicial
 Responsável: Dev Front-End
-Descrição: Definir cores, tipografia, componentes e referências visuais do Quantium Black.
+Descrição: Definir cores, tipografia, componentes e referências visuais do Quantium Bank.
 
 ENTREGA DA SPRINT 1:
 - Requisitos priorizados.
@@ -127,7 +127,7 @@ S3-04 — Criar página de transferências
 Responsável: Dev Front-End
 Descrição: Criar formulário para transferência utilizando exclusivamente o CPF do destinatário.
 
-S3-05 — Criar estilo visual Quantium Black
+S3-05 — Criar estilo visual Quantium Bank
 Responsável: Dev Front-End
 Descrição: Implementar tema escuro, estética high-tech, cores neon/LED, mensagens e componentes visuais.
 
