@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Login | Quantium Black{% endblock %}
+{% block content %}
+<section class="auth-card">
+    <p class="eyebrow">ACESSO SEGURO</p>
+    <h1>Entre no seu banco digital.</h1>
+    <p class="muted">Use seu CPF e sua senha para acessar o Quantium Black.</p>
+    <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>CPF<input name="cpf" inputmode="numeric" placeholder="000.000.000-00" required></label>
+        <label>Senha<input name="senha" type="password" required></label>
+        <button class="primary" type="submit">Entrar</button>
+    </form>
+    <p class="muted">Ainda não possui conta? <a href="{{ url_for('register') }}">Cadastre-se</a></p>
+</section>
+{% endblock %}

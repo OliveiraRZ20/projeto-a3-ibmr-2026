@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Cadastro | Quantium Black{% endblock %}
+{% block content %}
+<section class="auth-card">
+    <p class="eyebrow">NOVA CONTA</p>
+    <h1>Crie seu acesso.</h1>
+    <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Nome<input name="nome" maxlength="100" required></label>
+        <label>CPF<input name="cpf" inputmode="numeric" placeholder="000.000.000-00" required></label>
+        <label>Senha<input name="senha" type="password" minlength="6" required></label>
+        <p class="hint">Mínimo de 6 caracteres, sem espaços, com letras, número e símbolo.</p>
+        <button class="primary" type="submit">Criar conta</button>
+    </form>
+    <p class="muted">Já possui conta? <a href="{{ url_for('login') }}">Voltar ao login</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | Quantium Black{% endblock %}
+{% block content %}
+<section class="hero">
+    <div><p class="eyebrow">VISÃO GERAL</p><h1>Olá, {{ user.nome }}.</h1><p class="muted">Sua conta em movimento.</p></div>
+    <a class="primary button" href="{{ url_for('transferir') }}">Nova transferência</a>
+</section>
+<section class="balance-card"><span>Saldo disponível</span><strong>R$ {{ "%.2f"|format(user.saldo)|replace(".", ",") }}</strong></section>
+<section class="panel">
+    <div class="panel-heading"><h2>Últimas movimentações</h2><a href="{{ url_for('usuarios') }}">Ver usuários</a></div>
+    {% if transactions %}
+    <div class="transactions">
+        {% for transaction in transactions %}
+        <div class="transaction"><span>{{ "Envio" if transaction.conta_origem_id == user.id else "Recebimento" }}</span><strong>R$ {{ "%.2f"|format(transaction.valor)|replace(".", ",") }}</strong><small>{{ transaction.data_hora.strftime("%d/%m/%Y %H:%M") }}</small></div>
+        {% endfor %}
+    </div>
+    {% else %}<p class="muted">Nenhuma transação registrada.</p>{% endif %}
+</section>
+{% endblock %}

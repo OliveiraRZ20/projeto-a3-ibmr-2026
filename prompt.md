@@ -15,25 +15,28 @@ O repositório deve seguir rigorosamente a seguinte estrutura de arquivos e sepa
 .
 ├── instance/
 │   └── banco.db              # Banco de dados SQLite (gerado automaticamente)
-├── static/
-│   ├── css/
-│   │   └── style.css         # Estilização compartilhada da aplicação
-│   └── js/
-│       └── app.js            # Interações e validações auxiliares do frontend
-├── cpf.py                    # Validação e representação de CPF
+├── app/
+│   ├── models.py             # Modelos ORM e instância do SQLAlchemy
+│   ├── routes.py             # Rotas HTTP e integração com os serviços
+│   ├── services.py           # Regras de negócio testáveis
+│   ├── objects/
+│   │   └── cpf.py            # Objeto de valor e validação de CPF
+│   ├── templates/
+│   │   ├── base.html
+│   │   ├── login.html
+│   │   ├── register.html
+│   │   ├── dashboard.html
+│   │   ├── transferir.html
+│   │   └── usuarios.html
+│   └── static/
+│       ├── css/style.css     # Estilização compartilhada
+│       └── js/app.js         # Interações auxiliares do frontend
 ├── seed.py                   # Criação opcional de dados de demonstração
 ├── reset_db.py               # Recriação controlada do banco para demonstração
 ├── .env.example              # Modelo de variáveis de ambiente
 ├── tests/
 │   └── test_business_rules.py # Testes unitários das regras de negócio
-├── templates/
-│   ├── login.html            # Tela de login dos usuários
-│   ├── register.html         # Tela de cadastro de novos usuários
-│   ├── dashboard.html        # Painel principal (saldo atual e histórico de extrato)
-│   └── transferir.html       # Formulário para realizar transferências
-├── model.py                  # CAMADA MODEL (Mapeamento ORM com SQLAlchemy)
-├── controller.py             # CAMADA CONTROLLER (Regras de negócio e Rotas HTTP)
-├── server.py                 # PONTO DE ENTRADA (Inicialização do servidor Flask)
+├── run.py                    # PONTO DE ENTRADA (Inicialização do servidor Flask)
 └── README.md
 ```
 
@@ -79,7 +82,7 @@ O repositório deve seguir rigorosamente a seguinte estrutura de arquivos e sepa
     6. Executa o débito na origem (`origem.saldo -= valor`) e o crédito no destino (`destino.saldo += valor`).
     7. Registra o histórico na tabela `Transacao`.
     8. Aplica a alteração com `db.session.commit()`. Em caso de erro, realiza `db.session.rollback()` e informa uma falha sem deixar alterações parciais.
-  - `GET /logout`: Encerra a sessão e redireciona para a tela inicial.
+  - `POST /logout`: Encerra a sessão e redireciona para a tela inicial.
 
 ### 3. `server.py` (Main / Server)
 - Instanciar a aplicação Flask (`app = Flask(__name__)`).
@@ -104,7 +107,7 @@ O repositório deve seguir rigorosamente a seguinte estrutura de arquivos e sepa
 ---
 
 ## Arquitetura Web
-- Utilizar quatro templates HTML: `login.html`, `register.html`, `dashboard.html` e `transferir.html`.
+- Utilizar cinco templates HTML: `login.html`, `register.html`, `dashboard.html`, `transferir.html` e `usuarios.html`, com `base.html` para o layout compartilhado.
 - Adicionar uma área autenticada para listar todos os usuários cadastrados, com busca por CPF/nome e paginação quando a quantidade ultrapassar o limite definido pela aplicação. Nesta demonstração, os CPFs podem ser exibidos integralmente.
 - Utilizar um único arquivo CSS compartilhado em `static/css/style.css`, concentrando layout, cores, formulários, mensagens, componentes e responsividade.
 - Utilizar um único arquivo JavaScript compartilhado em `static/js/app.js` para máscara e normalização visual do CPF, validações auxiliares dos formulários, confirmação de transferências e interações comuns.
@@ -147,7 +150,7 @@ O repositório deve seguir rigorosamente a seguinte estrutura de arquivos e sepa
 - Garanta a separação estrita de responsabilidades entre `model.py`, `controller.py`, `server.py` e os templates `.html`.
 - Adicione comentários curtos explicando a lógica de transação atômica e as validações de regra de negócio no `controller.py`.
 - Utilize `bcrypt` ou `Flask-Bcrypt` e registre a dependência no `requirements.txt`; não implemente o algoritmo de hash manualmente.
-- Reutilize a classe `CPF` de `cpf.py` para validar CPFs, mantendo o valor persistido sem pontuação e evitando duplicidade.
+- Reutilize a classe `CPF` de `app/objects/cpf.py` como objeto de valor, mantendo o valor persistido sem pontuação e evitando duplicidade.
 - Trate erros de CPF duplicado e falhas de banco explicitamente, com mensagens apropriadas e rollback quando necessário.
 - Mantenha `README.md` fora do escopo inicial; documentá-lo após a implementação e a primeira fase de testes.
 
