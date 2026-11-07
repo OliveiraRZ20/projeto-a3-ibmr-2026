@@ -43,6 +43,7 @@ desktop.ini
 # Editor and IDE files
 .vscode/
 .idea/
+.replit
 *.swp
 *.swo
 *~
