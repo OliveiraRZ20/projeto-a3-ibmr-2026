@@ -59,6 +59,7 @@ def create_user(
     data_nascimento: str | None = None,
     confirmacao_senha: str | None = None,
     saldo: Decimal = Decimal("0.00"),
+    is_admin: bool = False,
 ):
     normalized = normalize_cpf(cpf)
     normalized_name = _normalize_name(nome)
@@ -79,6 +80,7 @@ def create_user(
         data_nascimento=birth_date,
         senha=hash_password(senha),
         saldo=saldo,
+        is_admin=is_admin,
     )
     db.session.add(user)
     return user

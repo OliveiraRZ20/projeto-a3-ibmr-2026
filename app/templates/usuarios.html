@@ -4,7 +4,7 @@
 <section class="panel">
     <p class="eyebrow">DEMONSTRAÇÃO</p><h1>Usuários cadastrados.</h1>
     {% for user in pagination.items %}
-    <div class="user-row"><strong>{{ user.nome }}</strong><span>{{ user.cpf }}</span></div>
+    <div class="user-row"><strong>{{ user.nome }}</strong><span>{{ user.cpf|cpf }}</span></div>
     {% endfor %}
     <div class="pagination">
         {% if pagination.has_prev %}<a href="{{ url_for('usuarios', page=pagination.prev_num) }}">Anterior</a>{% endif %}

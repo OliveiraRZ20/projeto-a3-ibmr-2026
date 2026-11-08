@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Transações | Administração{% endblock %}
+{% block content %}
+<section class="panel">
+    <div class="panel-heading"><div><p class="eyebrow">ADMINISTRAÇÃO</p><h1>Transações.</h1></div><a href="{{ url_for('admin_dashboard') }}">Voltar ao painel</a></div>
+    <form method="get" class="admin-filters">
+        <label>CPF <input name="cpf" value="{{ cpf }}" placeholder="CPF de origem ou destino"></label>
+        <label>Valor mínimo <input name="minimo" value="{{ minimo }}" inputmode="decimal"></label>
+        <label>Valor máximo <input name="maximo" value="{{ maximo }}" inputmode="decimal"></label>
+        <label>Desde <input type="date" name="desde" value="{{ desde }}"></label>
+        <label>Até <input type="date" name="ate" value="{{ ate }}"></label>
+        <button class="primary" type="submit">Filtrar</button>
+    </form>
+    {% for transaction in pagination.items %}
+    <div class="admin-row">
+        <div><strong>{{ transaction.origem.nome }} → {{ transaction.destino.nome }}</strong><small>{{ transaction.origem.cpf|cpf }} → {{ transaction.destino.cpf|cpf }}</small></div>
+        <div><span>{{ transaction.valor|money }}</span><small>{{ transaction.data_hora|local_datetime }}</small></div>
+    </div>
+    {% else %}<p class="muted">Nenhuma transação encontrada.</p>{% endfor %}
+    <div class="pagination">
+        {% if pagination.has_prev %}<a href="{{ url_for('admin_transacoes', page=pagination.prev_num, cpf=cpf, minimo=minimo, maximo=maximo, desde=desde, ate=ate) }}">Anterior</a>{% endif %}
+        <span>Página {{ pagination.page }} de {{ pagination.pages or 1 }}</span>
+        {% if pagination.has_next %}<a href="{{ url_for('admin_transacoes', page=pagination.next_num, cpf=cpf, minimo=minimo, maximo=maximo, desde=desde, ate=ate) }}">Próxima</a>{% endif %}
+    </div>
+</section>
+{% endblock %}

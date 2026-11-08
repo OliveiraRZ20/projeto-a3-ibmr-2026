@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Usuários | Administração{% endblock %}
+{% block content %}
+<section class="panel">
+    <div class="panel-heading"><div><p class="eyebrow">ADMINISTRAÇÃO</p><h1>Usuários.</h1></div><a href="{{ url_for('admin_dashboard') }}">Voltar ao painel</a></div>
+    <form method="get" class="admin-filters">
+        <label>Busca <input name="q" value="{{ search }}" placeholder="Nome, CPF ou e-mail"></label>
+        <label>Desde <input type="date" name="desde" value="{{ desde }}"></label>
+        <label>Até <input type="date" name="ate" value="{{ ate }}"></label>
+        <label class="checkbox-label"><input type="checkbox" name="admin" value="true" {% if request.args.get('admin') == 'true' %}checked{% endif %}> Somente administradores</label>
+        <button class="primary" type="submit">Filtrar</button>
+    </form>
+    {% if pagination.items %}
+    <div class="table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th>CPF</th>
+                    <th>E-mail</th>
+                    <th class="numeric">Saldo</th>
+                    <th>Perfil</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in pagination.items %}
+                <tr>
+                    <td data-label="Usuário"><strong>{{ user.nome }}</strong></td>
+                    <td data-label="CPF">{{ user.cpf|cpf }}</td>
+                    <td data-label="E-mail">{{ user.email }}</td>
+                    <td class="numeric" data-label="Saldo">{{ user.saldo|money }}</td>
+                    <td data-label="Perfil"><span class="role-badge {{ 'admin' if user.is_admin else '' }}">{{ "Administrador" if user.is_admin else "Usuário" }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}<p class="muted">Nenhum usuário encontrado.</p>{% endif %}
+    <div class="pagination">
+        {% if pagination.has_prev %}<a href="{{ url_for('admin_usuarios', page=pagination.prev_num, q=search, admin=request.args.get('admin'), desde=desde, ate=ate) }}">Anterior</a>{% endif %}
+        <span>Página {{ pagination.page }} de {{ pagination.pages or 1 }}</span>
+        {% if pagination.has_next %}<a href="{{ url_for('admin_usuarios', page=pagination.next_num, q=search, admin=request.args.get('admin'), desde=desde, ate=ate) }}">Próxima</a>{% endif %}
+    </div>
+</section>
+{% endblock %}

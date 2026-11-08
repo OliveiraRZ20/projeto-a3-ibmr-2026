@@ -15,6 +15,7 @@
             <a href="{{ url_for('perfil') }}">Meu perfil</a>
             <a href="{{ url_for('usuarios') }}">Usuários</a>
             <a href="{{ url_for('transferir') }}">Transferir</a>
+            {% if session.get('is_admin') %}<a href="{{ url_for('admin_dashboard') }}">Admin</a>{% endif %}
             <form method="post" action="{{ url_for('logout') }}" class="inline-form">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <button class="link-button" type="submit">Sair</button>

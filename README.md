@@ -17,6 +17,8 @@ Sistema bancário web desenvolvido em Flask como projeto acadêmico de Engenhari
 - Página **Meu Perfil** autenticada com dados somente para leitura.
 - Timestamps de criação e atualização dos usuários.
 - Seed com dez usuários fictícios para demonstração.
+- Seed dinâmica configurável para desenvolvimento, com dados reproduzíveis opcionalmente.
+- Painel administrativo somente leitura para usuários autorizados.
 - Interface em português brasileiro com identidade visual escura, high-tech e neon.
 
 ## Tecnologias
@@ -27,6 +29,7 @@ Sistema bancário web desenvolvido em Flask como projeto acadêmico de Engenhari
 - SQLite
 - BCrypt
 - Flask-WTF
+- Faker
 - Pytest
 
 ## Arquitetura
@@ -52,6 +55,7 @@ O projeto utiliza uma organização modular, mantendo modelos, regras de negóci
 ├── instance/                 # Banco SQLite local, não versionado
 ├── run.py                    # Ponto de entrada da aplicação
 ├── seed.py                   # Usuários fictícios de demonstração
+├── admin.py                  # Criação e promoção de administradores
 ├── reset_db.py               # Recriação controlada do banco
 ├── requirements.txt          # Dependências Python
 └── README.md
@@ -107,6 +111,9 @@ Crie um arquivo `.env` na raiz do projeto. Ele não deve ser versionado:
 SECRET_KEY=gere-uma-chave-secreta-e-aleatoria
 FLASK_ENV=development
 SEED_DEMO_DATA=false
+SEED_USER_COUNT=10
+# Opcional: use uma semente para reproduzir a massa gerada.
+SEED_RANDOM_SEED=
 ```
 
 Uma chave pode ser gerada com:
@@ -115,7 +122,39 @@ Uma chave pode ser gerada com:
 .\.venv\Scripts\python.exe -c "import secrets; print(secrets.token_hex(32))"
 ```
 
-`SEED_DEMO_DATA=true` cria os usuários de demonstração automaticamente quando o banco ainda não possui usuários. Para um cadastro manual, mantenha o valor como `false`.
+`SEED_DEMO_DATA=true` cria usuários fictícios automaticamente quando o banco
+ainda não possui usuários. Para um cadastro manual, mantenha o valor como
+`false`.
+`SEED_USER_COUNT` define a quantidade de usuários gerados pela seed dinâmica,
+com padrão `10`. `SEED_RANDOM_SEED` permite reproduzir a mesma massa de dados
+quando informado. A seed não cria administradores automaticamente; use o
+script `admin.py` para promover ou criar um administrador.
+
+O painel administrativo fica disponível em `/admin` apenas para usuários com
+permissão administrativa. Ele é somente leitura e apresenta indicadores,
+usuários e transações, sem permitir alteração de saldo, exclusão ou promoção
+de usuários.
+
+Para promover um usuário existente a administrador:
+
+```powershell
+.\.venv\Scripts\python.exe admin.py promover --cpf 21618722069
+```
+
+Para criar um novo administrador, informe os dados cadastrais. A senha será
+solicitada de forma oculta no terminal:
+
+```powershell
+.\.venv\Scripts\python.exe admin.py criar `
+  --nome "Nome do Administrador" `
+  --cpf 21618722069 `
+  --email admin@quantium.test `
+  --telefone "(21) 99876-5401" `
+  --data-nascimento 1990-04-12
+```
+
+O script reutiliza as validações do cadastro, cria o hash BCrypt da senha e
+não salva a senha em texto puro.
 
 ## Executando a aplicação
 
@@ -131,13 +170,20 @@ http://127.0.0.1:5000
 
 ## Usuários de demonstração
 
-Para criar os dez usuários fictícios manualmente:
+Para criar os usuários fictícios manualmente:
 
 ```powershell
 .\.venv\Scripts\python.exe -m seed
 ```
 
-As senhas demonstrativas seguem o padrão `Quantium@01` até `Quantium@10`. Os CPFs e saldos estão definidos em `seed.py` exclusivamente para testes e apresentação acadêmica.
+Os dados são gerados dinamicamente, com CPFs válidos, nomes, e-mails,
+telefones, datas de nascimento, senhas e saldos fictícios. As credenciais
+geradas são exibidas somente no terminal durante a execução manual da seed e
+não são armazenadas em texto puro.
+
+A seed é idempotente: quando o banco já possui usuários, nenhuma nova inclusão
+é realizada. Para gerar uma massa nova, use o reset do banco, exclusivamente
+em desenvolvimento.
 
 Para apagar e recriar o banco com os dados demonstrativos:
 
@@ -155,6 +201,10 @@ Os testes são unitários e estão separados por responsabilidade:
 - `test_authentication.py`: política de senha, hash, cadastro e perfil.
 - `test_objects.py`: validação de e-mail, telefone e data de nascimento.
 - `test_transfers.py`: transferências, saldos e regras de negócio.
+- `test_seed.py`: geração dinâmica, unicidade e idempotência da seed.
+- `test_admin.py`: autorização e consultas do painel administrativo.
+- `test_admin_script.py`: criação e promoção de administradores.
+- `test_formatting.py`: formatação de CPF e valores monetários.
 
 Execute todos com:
 
@@ -170,7 +220,10 @@ Execute todos com:
 - Formulários utilizam proteção CSRF.
 - O banco SQLite atende ao escopo acadêmico e de demonstração.
 - Não há exclusão física de usuários que possuam histórico financeiro.
-- Auditoria, migrações e múltiplos tipos de conta não fazem parte da versão 1.0.
+- O painel administrativo é somente leitura; alterações administrativas não
+  são realizadas pela interface.
+- Auditoria avançada, migrações e múltiplos tipos de conta permanecem fora do
+  escopo da versão 1.2.0.
 
 ## Equipe
 

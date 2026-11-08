@@ -53,6 +53,12 @@ class Usuario(db.Model):
         nullable=False,
         comment="Hash BCrypt da senha do usuário.",
     )
+    is_admin = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=False,
+        comment="Indica se o usuário pode consultar o painel administrativo.",
+    )
     saldo = db.Column(
         Numeric(12, 2),
         nullable=False,
@@ -83,6 +89,7 @@ class Usuario(db.Model):
         data_nascimento: date,
         senha: str,
         saldo: Decimal = Decimal("0.00"),
+        is_admin: bool = False,
     ) -> None:
         super().__init__()
         self.nome = nome
@@ -92,6 +99,7 @@ class Usuario(db.Model):
         self.data_nascimento = data_nascimento
         self.senha = senha
         self.saldo = saldo
+        self.is_admin = is_admin
 
     transacoes_enviadas = relationship(
         "Transacao",

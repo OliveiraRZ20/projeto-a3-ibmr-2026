@@ -1,6 +1,9 @@
 from functools import wraps
+from datetime import datetime, time
+from decimal import Decimal, InvalidOperation
 
 from flask import Flask, flash, redirect, render_template, request, session, url_for
+from sqlalchemy import func, or_
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from .models import Transacao, Usuario, db
@@ -18,6 +21,31 @@ def login_required(view):
         return view(*args, **kwargs)
 
     return wrapped
+
+
+def admin_required(view):
+    @wraps(view)
+    @login_required
+    def wrapped(*args, **kwargs):
+        user = db.session.get(Usuario, session["user_id"])
+        if user is None or not user.is_admin:
+            flash("Acesso restrito a administradores.", "error")
+            return redirect(url_for("dashboard"))
+        return view(*args, **kwargs)
+
+    return wrapped
+
+
+def _parse_filter_date(value: str) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.combine(
+            datetime.strptime(value, "%Y-%m-%d").date(),
+            time.min,
+        )
+    except ValueError:
+        raise ValueError("Data de filtro inválida.")
 
 
 def register_routes(app: Flask) -> None:
@@ -43,6 +71,7 @@ def register_routes(app: Flask) -> None:
             else:
                 session.clear()
                 session["user_id"] = user.id
+                session["is_admin"] = user.is_admin
                 return redirect(url_for("dashboard"))
         return render_template("login.html")
 
@@ -103,6 +132,127 @@ def register_routes(app: Flask) -> None:
             page=page, per_page=10, error_out=False
         )
         return render_template("usuarios.html", pagination=pagination)
+
+    @app.get("/admin")
+    @admin_required
+    def admin_dashboard():
+        total_users = db.session.scalar(
+            db.select(func.count()).select_from(Usuario)
+        )
+        total_admins = db.session.scalar(
+            db.select(func.count()).select_from(Usuario).where(Usuario.is_admin.is_(True))
+        )
+        total_balance = db.session.scalar(
+            db.select(func.coalesce(func.sum(Usuario.saldo), 0))
+        )
+        total_transactions = db.session.scalar(
+            db.select(func.count()).select_from(Transacao)
+        )
+        total_transferred = db.session.scalar(
+            db.select(func.coalesce(func.sum(Transacao.valor), 0))
+        )
+        recent_users = Usuario.query.order_by(Usuario.created_at.desc()).limit(5).all()
+        return render_template(
+            "admin_dashboard.html",
+            total_users=total_users,
+            total_admins=total_admins,
+            total_balance=total_balance,
+            total_transactions=total_transactions,
+            total_transferred=total_transferred,
+            recent_users=recent_users,
+        )
+
+    @app.get("/admin/usuarios")
+    @admin_required
+    def admin_usuarios():
+        page = request.args.get("page", 1, type=int)
+        search = request.args.get("q", "").strip()
+        query = Usuario.query
+        if search:
+            pattern = f"%{search}%"
+            query = query.filter(
+                or_(
+                    Usuario.nome.ilike(pattern),
+                    Usuario.cpf.ilike(pattern),
+                    Usuario.email.ilike(pattern),
+                )
+            )
+        if request.args.get("admin") == "true":
+            query = query.filter(Usuario.is_admin.is_(True))
+        try:
+            if request.args.get("desde"):
+                query = query.filter(
+                    Usuario.created_at >= _parse_filter_date(request.args["desde"])
+                )
+            if request.args.get("ate"):
+                query = query.filter(
+                    Usuario.created_at
+                    < _parse_filter_date(request.args["ate"]).replace(
+                        hour=23, minute=59, second=59
+                    )
+                )
+        except ValueError as error:
+            flash(str(error), "error")
+        pagination = query.order_by(Usuario.nome).paginate(
+            page=page, per_page=10, error_out=False
+        )
+        return render_template(
+            "admin_usuarios.html",
+            pagination=pagination,
+            search=search,
+            desde=request.args.get("desde", ""),
+            ate=request.args.get("ate", ""),
+        )
+
+    @app.get("/admin/transacoes")
+    @admin_required
+    def admin_transacoes():
+        page = request.args.get("page", 1, type=int)
+        cpf = request.args.get("cpf", "").strip()
+        query = Transacao.query
+        if cpf:
+            pattern = f"%{cpf}%"
+            query = query.filter(
+                or_(
+                    Transacao.origem.has(Usuario.cpf.ilike(pattern)),
+                    Transacao.destino.has(Usuario.cpf.ilike(pattern)),
+                )
+            )
+        minimum = request.args.get("minimo", "").strip()
+        maximum = request.args.get("maximo", "").strip()
+        try:
+            if minimum:
+                query = query.filter(Transacao.valor >= Decimal(minimum))
+            if maximum:
+                query = query.filter(Transacao.valor <= Decimal(maximum))
+        except (InvalidOperation, ValueError):
+            flash("Faixa de valor inválida.", "error")
+        try:
+            if request.args.get("desde"):
+                query = query.filter(
+                    Transacao.data_hora >= _parse_filter_date(request.args["desde"])
+                )
+            if request.args.get("ate"):
+                query = query.filter(
+                    Transacao.data_hora
+                    < _parse_filter_date(request.args["ate"]).replace(
+                        hour=23, minute=59, second=59
+                    )
+                )
+        except ValueError as error:
+            flash(str(error), "error")
+        pagination = query.order_by(Transacao.data_hora.desc()).paginate(
+            page=page, per_page=10, error_out=False
+        )
+        return render_template(
+            "admin_transacoes.html",
+            pagination=pagination,
+            cpf=cpf,
+            minimo=minimum,
+            maximo=maximum,
+            desde=request.args.get("desde", ""),
+            ate=request.args.get("ate", ""),
+        )
 
     @app.route("/transferir", methods=["GET", "POST"])
     @login_required
