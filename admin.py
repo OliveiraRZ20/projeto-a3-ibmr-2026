@@ -71,8 +71,8 @@ def main() -> int:
     args = _build_parser().parse_args()
     app = create_app({"SEED_DEMO_DATA": False})
 
-    try:
-        with app.app_context():
+    with app.app_context():
+        try:
             if args.command == "promover":
                 user = promote_user(args.cpf)
                 print(f"Usuário {user.nome} agora é administrador.")
@@ -91,10 +91,10 @@ def main() -> int:
             )
             print(f"Administrador {user.nome} criado com sucesso.")
             return 0
-    except (ValueError, OSError) as error:
-        db.session.rollback()
-        print(f"Erro: {error}")
-        return 1
+        except (ValueError, OSError) as error:
+            db.session.rollback()
+            print(f"Erro: {error}")
+            return 1
 
 
 if __name__ == "__main__":
