@@ -27,7 +27,7 @@ def seed_demo_users() -> int:
             nome,
             cpf,
             senha,
-            Decimal(saldo),
+            saldo=Decimal(saldo),
             email=email,
             telefone=telefone,
             data_nascimento=data_nascimento,

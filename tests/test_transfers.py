@@ -13,10 +13,14 @@ def user_details(prefix: str):
     }
 
 
+ANA_DETAILS = user_details("ana")
+BRUNO_DETAILS = user_details("bruno")
+
+
 def test_transfer_updates_balances_and_records_transaction(app, database):
     with app.app_context():
-        origin = create_user("Ana Lima", "21618722069", "Quantium@01", Decimal("10.00"), **user_details("ana"))
-        destination = create_user("Bruno Costa", "21718722095", "Quantium@02", **user_details("bruno"))
+        origin = create_user("Ana Lima", "21618722069", "Quantium@01", saldo=Decimal("10.00"), email=ANA_DETAILS["email"], telefone=ANA_DETAILS["telefone"], data_nascimento=ANA_DETAILS["data_nascimento"])
+        destination = create_user("Bruno Costa", "21718722095", "Quantium@02", email=BRUNO_DETAILS["email"], telefone=BRUNO_DETAILS["telefone"], data_nascimento=BRUNO_DETAILS["data_nascimento"])
         db.session.commit()
         transaction = transfer_money(origin.id, destination.cpf, "3.25")
         db.session.commit()
@@ -31,8 +35,8 @@ def test_transfer_updates_balances_and_records_transaction(app, database):
 )
 def test_transfer_rejects_invalid_values(app, database, value, message):
     with app.app_context():
-        origin = create_user("Ana Lima", "21618722069", "Quantium@01", Decimal("10.00"), **user_details("ana"))
-        create_user("Bruno Costa", "21718722095", "Quantium@02", **user_details("bruno"))
+        origin = create_user("Ana Lima", "21618722069", "Quantium@01", saldo=Decimal("10.00"), email=ANA_DETAILS["email"], telefone=ANA_DETAILS["telefone"], data_nascimento=ANA_DETAILS["data_nascimento"])
+        create_user("Bruno Costa", "21718722095", "Quantium@02", email=BRUNO_DETAILS["email"], telefone=BRUNO_DETAILS["telefone"], data_nascimento=BRUNO_DETAILS["data_nascimento"])
         db.session.commit()
         with pytest.raises(ValueError, match=message):
             transfer_money(origin.id, "21718722095", value)
@@ -40,7 +44,7 @@ def test_transfer_rejects_invalid_values(app, database, value, message):
 
 def test_transfer_rejects_self_transfer(app, database):
     with app.app_context():
-        origin = create_user("Ana Lima", "21618722069", "Quantium@01", Decimal("10.00"), **user_details("ana"))
+        origin = create_user("Ana Lima", "21618722069", "Quantium@01", saldo=Decimal("10.00"), email=ANA_DETAILS["email"], telefone=ANA_DETAILS["telefone"], data_nascimento=ANA_DETAILS["data_nascimento"])
         db.session.commit()
         with pytest.raises(ValueError, match="própria"):
             transfer_money(origin.id, origin.cpf, "1.00")

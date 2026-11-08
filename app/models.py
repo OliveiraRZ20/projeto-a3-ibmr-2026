@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from decimal import Decimal
 
 from flask_sqlalchemy import SQLAlchemy
@@ -73,6 +73,26 @@ class Usuario(db.Model):
         comment="Data e hora da última atualização, armazenada em UTC.",
     )
 
+    def __init__(
+        self,
+        *,
+        nome: str,
+        cpf: str,
+        email: str,
+        telefone: str,
+        data_nascimento: date,
+        senha: str,
+        saldo: Decimal = Decimal("0.00"),
+    ) -> None:
+        super().__init__()
+        self.nome = nome
+        self.cpf = cpf
+        self.email = email
+        self.telefone = telefone
+        self.data_nascimento = data_nascimento
+        self.senha = senha
+        self.saldo = saldo
+
     transacoes_enviadas = relationship(
         "Transacao",
         foreign_keys="Transacao.conta_origem_id",
@@ -127,6 +147,18 @@ class Transacao(db.Model):
         default=lambda: datetime.now(timezone.utc),
         comment="Data e hora da transferência, armazenada em UTC.",
     )
+
+    def __init__(
+        self,
+        *,
+        conta_origem_id: int,
+        conta_destino_id: int,
+        valor: Decimal,
+    ) -> None:
+        super().__init__()
+        self.conta_origem_id = conta_origem_id
+        self.conta_destino_id = conta_destino_id
+        self.valor = valor
 
     origem = relationship(
         "Usuario",

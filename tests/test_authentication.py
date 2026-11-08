@@ -27,7 +27,14 @@ def test_password_policy_and_hash():
 
 def test_create_user_rejects_duplicate_cpf(app, database):
     with app.app_context():
-        create_user("Ana Lima", "21618722069", "Quantium@01", **USER_DETAILS)
+        create_user(
+            "Ana Lima",
+            "21618722069",
+            "Quantium@01",
+            email=USER_DETAILS["email"],
+            telefone=USER_DETAILS["telefone"],
+            data_nascimento=USER_DETAILS["data_nascimento"],
+        )
         db.session.commit()
         with pytest.raises(ValueError, match="CPF já cadastrado"):
             create_user(
@@ -43,7 +50,14 @@ def test_create_user_rejects_duplicate_cpf(app, database):
 def test_create_user_validates_profile_data(app, database):
     with app.app_context():
         with pytest.raises(ValueError, match="nome e sobrenome"):
-            create_user("Ana", "21618722069", "Quantium@01", **USER_DETAILS)
+            create_user(
+                "Ana",
+                "21618722069",
+                "Quantium@01",
+                email=USER_DETAILS["email"],
+                telefone=USER_DETAILS["telefone"],
+                data_nascimento=USER_DETAILS["data_nascimento"],
+            )
         with pytest.raises(ValueError, match="E-mail inválido"):
             create_user(
                 "Ana Lima",
@@ -58,7 +72,9 @@ def test_create_user_validates_profile_data(app, database):
                 "Ana 2 Lima",
                 "21618722069",
                 "Quantium@01",
-                **USER_DETAILS,
+                email=USER_DETAILS["email"],
+                telefone=USER_DETAILS["telefone"],
+                data_nascimento=USER_DETAILS["data_nascimento"],
             )
         with pytest.raises(ValueError, match="senhas não coincidem"):
             create_user(
@@ -66,13 +82,22 @@ def test_create_user_validates_profile_data(app, database):
                 "21618722069",
                 "Quantium@01",
                 confirmacao_senha="Quantium@02",
-                **USER_DETAILS,
+                email=USER_DETAILS["email"],
+                telefone=USER_DETAILS["telefone"],
+                data_nascimento=USER_DETAILS["data_nascimento"],
             )
 
 
 def test_create_user_stores_profile_data_and_timestamps(app, database):
     with app.app_context():
-        user = create_user(" Ana   Lima ", "21618722069", "Quantium@01", **USER_DETAILS)
+        user = create_user(
+            " Ana   Lima ",
+            "21618722069",
+            "Quantium@01",
+            email=USER_DETAILS["email"],
+            telefone=USER_DETAILS["telefone"],
+            data_nascimento=USER_DETAILS["data_nascimento"],
+        )
         db.session.commit()
         assert user.nome == "Ana Lima"
         assert user.email == "ana@example.com"
@@ -88,6 +113,8 @@ def test_create_user_normalizes_name_title_case(app, database):
             " aNA   lIMA ",
             "21618722069",
             "Quantium@01",
-            **USER_DETAILS,
+            email=USER_DETAILS["email"],
+            telefone=USER_DETAILS["telefone"],
+            data_nascimento=USER_DETAILS["data_nascimento"],
         )
         assert user.nome == "Ana Lima"

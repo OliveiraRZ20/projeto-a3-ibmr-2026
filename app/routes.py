@@ -77,12 +77,18 @@ def register_routes(app: Flask) -> None:
     @login_required
     def perfil():
         user = db.session.get(Usuario, session["user_id"])
+        if user is None:
+            session.clear()
+            return redirect(url_for("login"))
         return render_template("perfil.html", user=user)
 
     @app.get("/dashboard")
     @login_required
     def dashboard():
         user = db.session.get(Usuario, session["user_id"])
+        if user is None:
+            session.clear()
+            return redirect(url_for("login"))
         transactions = Transacao.query.filter(
             (Transacao.conta_origem_id == user.id)
             | (Transacao.conta_destino_id == user.id)

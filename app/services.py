@@ -53,11 +53,12 @@ def create_user(
     nome: str,
     cpf: str,
     senha: str,
-    saldo: Decimal = Decimal("0.00"),
+    *,
     email: str | None = None,
     telefone: str | None = None,
     data_nascimento: str | None = None,
     confirmacao_senha: str | None = None,
+    saldo: Decimal = Decimal("0.00"),
 ):
     normalized = normalize_cpf(cpf)
     normalized_name = _normalize_name(nome)
