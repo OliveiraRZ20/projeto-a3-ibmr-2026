@@ -11,7 +11,7 @@
     {% if transactions %}
     <div class="transactions">
         {% for transaction in transactions %}
-        <div class="transaction"><span>{{ "Envio" if transaction.conta_origem_id == user.id else "Recebimento" }}</span><strong>R$ {{ "%.2f"|format(transaction.valor)|replace(".", ",") }}</strong><small>{{ transaction.data_hora.strftime("%d/%m/%Y %H:%M") }}</small></div>
+        <div class="transaction"><span>{{ "Envio" if transaction.conta_origem_id == user.id else "Recebimento" }}</span><strong>R$ {{ "%.2f"|format(transaction.valor)|replace(".", ",") }}</strong><small>{{ transaction.data_hora|local_datetime }}</small></div>
         {% endfor %}
     </div>
     {% else %}<p class="muted">Nenhuma transação registrada.</p>{% endif %}

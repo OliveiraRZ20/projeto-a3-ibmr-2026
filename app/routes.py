@@ -10,7 +10,9 @@ from .services import create_user, normalize_cpf, transfer_money, verify_passwor
 def login_required(view):
     @wraps(view)
     def wrapped(*args, **kwargs):
-        if "user_id" not in session:
+        user_id = session.get("user_id")
+        if user_id is None or db.session.get(Usuario, user_id) is None:
+            session.clear()
             flash("Faça login para continuar.", "warning")
             return redirect(url_for("login"))
         return view(*args, **kwargs)
@@ -54,6 +56,10 @@ def register_routes(app: Flask) -> None:
                     request.form.get("nome", ""),
                     request.form.get("cpf", ""),
                     request.form.get("senha", ""),
+                    email=request.form.get("email", ""),
+                    telefone=request.form.get("telefone", ""),
+                    data_nascimento=request.form.get("data_nascimento", ""),
+                    confirmacao_senha=request.form.get("confirmacao_senha", ""),
                 )
                 db.session.commit()
                 flash("Cadastro realizado com sucesso.", "success")
@@ -66,6 +72,12 @@ def register_routes(app: Flask) -> None:
                 db.session.rollback()
                 flash("Não foi possível concluir o cadastro.", "error")
         return render_template("register.html")
+
+    @app.get("/perfil")
+    @login_required
+    def perfil():
+        user = db.session.get(Usuario, session["user_id"])
+        return render_template("perfil.html", user=user)
 
     @app.get("/dashboard")
     @login_required

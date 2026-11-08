@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Meu perfil | Quantium Bank{% endblock %}
+{% block content %}
+<section class="hero">
+    <div><p class="eyebrow">CONTA</p><h1>Meu perfil.</h1><p class="muted">Dados cadastrados para consulta.</p></div>
+</section>
+<section class="panel profile-grid">
+    <div><span class="muted">Nome completo</span><strong>{{ user.nome }}</strong></div>
+    <div><span class="muted">CPF</span><strong>{{ user.cpf[:3] }}.{{ user.cpf[3:6] }}.{{ user.cpf[6:9] }}-{{ user.cpf[9:] }}</strong></div>
+    <div><span class="muted">E-mail</span><strong>{{ user.email }}</strong></div>
+    <div><span class="muted">Telefone</span><strong>({{ user.telefone[:2] }}) {{ user.telefone[2:7] if user.telefone|length == 11 else user.telefone[2:6] }}-{{ user.telefone[7:] if user.telefone|length == 11 else user.telefone[6:] }}</strong></div>
+    <div><span class="muted">Data de nascimento</span><strong>{{ user.data_nascimento.strftime("%d/%m/%Y") }}</strong></div>
+    <div><span class="muted">Membro desde</span><strong>{{ user.created_at|local_datetime }}</strong></div>
+</section>
+{% endblock %}

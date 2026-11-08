@@ -7,8 +7,11 @@
     <p class="muted">Use seu CPF e sua senha para acessar o Quantium Bank.</p>
     <form method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <label>CPF<input name="cpf" inputmode="numeric" placeholder="000.000.000-00" required></label>
-        <label>Senha<input name="senha" type="password" required></label>
+        <label>CPF
+            <input name="cpf_visual" data-cpf-input data-cpf-name="cpf" inputmode="numeric" maxlength="14" pattern="[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}" placeholder="000.000.000-00" autocomplete="username" required>
+        </label>
+        <input type="hidden" name="cpf" data-cpf-value>
+        <label>Senha<input name="senha" type="password" maxlength="128" data-password-input autocomplete="current-password" required></label>
         <button class="primary" type="submit">Entrar</button>
     </form>
     <p class="muted">Ainda não possui conta? <a href="{{ url_for('register') }}">Cadastre-se</a></p>

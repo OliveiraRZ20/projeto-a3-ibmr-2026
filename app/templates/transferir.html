@@ -5,7 +5,10 @@
     <p class="eyebrow">MOVIMENTAÇÃO</p><h1>Enviar dinheiro.</h1>
     <form method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <label>CPF do destinatário<input name="cpf_destino" inputmode="numeric" placeholder="000.000.000-00" required></label>
+        <label>CPF do destinatário
+            <input name="cpf_destino_visual" data-cpf-input data-cpf-name="cpf_destino" inputmode="numeric" maxlength="14" pattern="[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}" placeholder="000.000.000-00" required>
+        </label>
+        <input type="hidden" name="cpf_destino" data-cpf-value>
         <label>Valor<input name="valor" type="number" min="0.01" step="0.01" placeholder="0,00" required></label>
         <button class="primary" type="submit">Confirmar transferência</button>
     </form>

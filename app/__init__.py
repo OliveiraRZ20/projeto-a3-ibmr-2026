@@ -7,6 +7,7 @@ from flask_wtf.csrf import CSRFProtect
 from sqlalchemy import event
 
 from .models import db
+from .time import format_local_datetime
 
 csrf = CSRFProtect()
 
@@ -26,9 +27,13 @@ def create_app(test_config: dict | None = None) -> Flask:
         SESSION_COOKIE_SECURE=os.getenv("FLASK_ENV") == "production",
         WTF_CSRF_TIME_LIMIT=None,
         SEED_DEMO_DATA=os.getenv("SEED_DEMO_DATA", "").lower() == "true",
+        DISPLAY_TIMEZONE=os.getenv("DISPLAY_TIMEZONE", "America/Sao_Paulo"),
     )
     if test_config:
         app.config.update(test_config)
+    app.jinja_env.filters["local_datetime"] = lambda value: format_local_datetime(
+        value, app.config["DISPLAY_TIMEZONE"]
+    )
 
     Path(app.instance_path).mkdir(parents=True, exist_ok=True)
     db.init_app(app)

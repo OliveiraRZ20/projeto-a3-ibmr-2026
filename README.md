@@ -4,7 +4,8 @@ Sistema bancário web desenvolvido em Flask como projeto acadêmico de Engenhari
 
 ## Funcionalidades
 
-- Cadastro de usuários com CPF válido e único.
+- Cadastro de usuários com nome completo, CPF, e-mail, telefone e data de nascimento.
+- Validação de maioridade, confirmação de senha e dados brasileiros de contato.
 - Autenticação exclusivamente por CPF e senha.
 - Senhas protegidas com hash BCrypt.
 - Sessões Flask protegidas por CSRF.
@@ -13,6 +14,8 @@ Sistema bancário web desenvolvido em Flask como projeto acadêmico de Engenhari
 - Valor mínimo de transferência de `R$ 0,01`, limitado ao saldo disponível.
 - Bloqueio de autotransferências.
 - Listagem autenticada de usuários com paginação.
+- Página **Meu Perfil** autenticada com dados somente para leitura.
+- Timestamps de criação e atualização dos usuários.
 - Seed com dez usuários fictícios para demonstração.
 - Interface em português brasileiro com identidade visual escura, high-tech e neon.
 
@@ -37,7 +40,10 @@ O projeto utiliza uma organização modular, mantendo modelos, regras de negóci
 │   ├── routes.py             # Rotas HTTP e controle de acesso
 │   ├── services.py           # Regras de negócio testáveis
 │   ├── objects/
-│   │   └── cpf.py            # Objeto de valor CPF
+│   │   ├── cpf.py             # Objeto de valor CPF
+│   │   ├── data_nascimento.py # Objeto de valor para maioridade
+│   │   ├── email.py           # Objeto de valor para e-mail
+│   │   └── telefone.py        # Objeto de valor para telefone brasileiro
 │   ├── templates/            # Páginas HTML e layout base
 │   └── static/
 │       ├── css/style.css     # Estilos da aplicação
@@ -55,12 +61,21 @@ O projeto utiliza uma organização modular, mantendo modelos, regras de negóci
 
 O sistema utiliza duas tabelas principais:
 
-- `usuario`: nome, CPF, hash da senha e saldo.
+- `usuario`: dados pessoais, hash da senha, saldo e timestamps de auditoria.
 - `transacao`: origem, destino, valor e data/hora da transferência.
 
 Os valores monetários usam `Numeric(12, 2)` no banco e `Decimal` no código. As transferências são confirmadas em uma operação atômica, com rollback em caso de falha. O SQLite mantém as chaves estrangeiras habilitadas e o histórico impede a exclusão de usuários relacionados a transações.
 
 O banco local é criado automaticamente em `instance/banco.db` e não é versionado.
+
+Após atualizar de uma versão anterior do projeto, recrie o banco local para aplicar
+as novas colunas do usuário e os dados de demonstração:
+
+```powershell
+.\.venv\Scripts\python.exe reset_db.py
+```
+
+> O reset remove os dados existentes e deve ser usado apenas no ambiente de desenvolvimento.
 
 ## Instalação local
 
@@ -137,7 +152,8 @@ Para apagar e recriar o banco com os dados demonstrativos:
 Os testes são unitários e estão separados por responsabilidade:
 
 - `test_cpf.py`: normalização e validação de CPF.
-- `test_authentication.py`: política de senha, hash e cadastro.
+- `test_authentication.py`: política de senha, hash, cadastro e perfil.
+- `test_objects.py`: validação de e-mail, telefone e data de nascimento.
 - `test_transfers.py`: transferências, saldos e regras de negócio.
 
 Execute todos com:
