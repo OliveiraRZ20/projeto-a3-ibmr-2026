@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Cadastro | Quantium Bank{% endblock %}
 {% block content %}
-<section class="auth-card">
+<section class="auth-card glass-card entrance">
+    <div class="auth-orb">Q</div>
     <p class="eyebrow">NOVA CONTA</p>
     <h1>Crie seu acesso.</h1>
     <form method="post">
@@ -28,7 +29,7 @@
             </span>
         </label>
         <p class="hint password-match" data-password-match aria-live="polite"></p>
-        <button class="primary" type="submit">Criar conta</button>
+        <button class="primary button-wide" type="submit">Criar conta <span aria-hidden="true">→</span></button>
     </form>
     <p class="muted">Já possui conta? <a href="{{ url_for('login') }}">Voltar ao login</a></p>
 </section>

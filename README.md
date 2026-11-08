@@ -19,7 +19,8 @@ Sistema bancário web desenvolvido em Flask como projeto acadêmico de Engenhari
 - Seed com dez usuários fictícios para demonstração.
 - Seed dinâmica configurável para desenvolvimento, com dados reproduzíveis opcionalmente.
 - Painel administrativo somente leitura para usuários autorizados.
-- Interface em português brasileiro com identidade visual escura, high-tech e neon.
+- Interface em português brasileiro com identidade visual dark/high-tech, Glassmorphism e Soft UI.
+- Layout responsivo com cards translúcidos, gradientes difusos, estados de foco e microinterações nativas.
 
 ## Tecnologias
 

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Transferir | Quantium Bank{% endblock %}
 {% block content %}
-<section class="form-card">
+<section class="form-card glass-card entrance">
     <p class="eyebrow">MOVIMENTAÇÃO</p><h1>Enviar dinheiro.</h1>
     <form method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -10,7 +10,7 @@
         </label>
         <input type="hidden" name="cpf_destino" data-cpf-value>
         <label>Valor<input name="valor" type="number" min="0.01" step="0.01" placeholder="0,00" required></label>
-        <button class="primary" type="submit">Confirmar transferência</button>
+        <button class="primary button-wide" type="submit">Confirmar transferência <span aria-hidden="true">→</span></button>
     </form>
 </section>
 {% endblock %}

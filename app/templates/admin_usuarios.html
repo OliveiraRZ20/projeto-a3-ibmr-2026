@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Usuários | Administração{% endblock %}
 {% block content %}
-<section class="panel">
+<section class="panel glass-card entrance">
     <div class="panel-heading"><div><p class="eyebrow">ADMINISTRAÇÃO</p><h1>Usuários.</h1></div><a href="{{ url_for('admin_dashboard') }}">Voltar ao painel</a></div>
     <form method="get" class="admin-filters">
         <label>Busca <input name="q" value="{{ search }}" placeholder="Nome, CPF ou e-mail"></label>

@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Administração | Quantium Bank{% endblock %}
 {% block content %}
-<section class="hero">
+<section class="hero entrance">
     <div><p class="eyebrow">ADMINISTRAÇÃO</p><h1>Painel administrativo.</h1><p class="muted">Consulta operacional do ambiente de desenvolvimento.</p></div>
 </section>
 <section class="admin-grid">
-    <div class="balance-card"><span>Usuários</span><strong>{{ total_users }}</strong></div>
-    <div class="balance-card"><span>Administradores</span><strong>{{ total_admins }}</strong></div>
-    <div class="balance-card"><span>Saldo total</span><strong>{{ total_balance|money }}</strong></div>
-    <div class="balance-card"><span>Transações</span><strong>{{ total_transactions }}</strong></div>
-    <div class="balance-card"><span>Volume transferido</span><strong>{{ total_transferred|money }}</strong></div>
+    <div class="balance-card glass-card metric-card"><span>Usuários</span><strong>{{ total_users }}</strong></div>
+    <div class="balance-card glass-card metric-card"><span>Administradores</span><strong>{{ total_admins }}</strong></div>
+    <div class="balance-card glass-card metric-card"><span>Saldo total</span><strong>{{ total_balance|money }}</strong></div>
+    <div class="balance-card glass-card metric-card"><span>Transações</span><strong>{{ total_transactions }}</strong></div>
+    <div class="balance-card glass-card metric-card"><span>Volume transferido</span><strong>{{ total_transferred|money }}</strong></div>
 </section>
-<section class="panel">
+<section class="panel glass-card">
     <div class="panel-heading"><h2>Consultas</h2><span><a href="{{ url_for('admin_usuarios') }}">Usuários</a> · <a href="{{ url_for('admin_transacoes') }}">Transações</a></span></div>
     <h3>Usuários recentes</h3>
     {% for user in recent_users %}

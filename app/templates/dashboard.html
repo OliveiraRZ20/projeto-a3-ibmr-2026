@@ -1,17 +1,21 @@
 {% extends "base.html" %}
 {% block title %}Dashboard | Quantium Bank{% endblock %}
 {% block content %}
-<section class="hero">
+<section class="hero entrance">
     <div><p class="eyebrow">VISÃO GERAL</p><h1>Olá, {{ user.nome }}.</h1><p class="muted">Sua conta em movimento.</p></div>
     <a class="primary button" href="{{ url_for('transferir') }}">Nova transferência</a>
 </section>
-<section class="balance-card"><span>Saldo disponível</span><strong>{{ user.saldo|money }}</strong></section>
-<section class="panel">
+<section class="balance-card glass-card balance-highlight">
+    <span>Saldo disponível</span>
+    <strong>{{ user.saldo|money }}</strong>
+    <small>Conta principal · saldo atualizado</small>
+</section>
+<section class="panel glass-card">
     <div class="panel-heading"><h2>Últimas movimentações</h2><a href="{{ url_for('usuarios') }}">Ver usuários</a></div>
     {% if transactions %}
     <div class="transactions">
         {% for transaction in transactions %}
-        <div class="transaction"><span>{{ "Envio" if transaction.conta_origem_id == user.id else "Recebimento" }}</span><strong>{{ transaction.valor|money }}</strong><small>{{ transaction.data_hora|local_datetime }}</small></div>
+        <div class="transaction"><span class="transaction-kind {{ 'sent' if transaction.conta_origem_id == user.id else 'received' }}">{{ "Envio" if transaction.conta_origem_id == user.id else "Recebimento" }}</span><strong>{{ transaction.valor|money }}</strong><small>{{ transaction.data_hora|local_datetime }}</small></div>
         {% endfor %}
     </div>
     {% else %}<p class="muted">Nenhuma transação registrada.</p>{% endif %}

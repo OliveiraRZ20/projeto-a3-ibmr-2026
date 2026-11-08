@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Login | Quantium Bank{% endblock %}
 {% block content %}
-<section class="auth-card">
+<section class="auth-card glass-card entrance">
+    <div class="auth-orb">Q</div>
     <p class="eyebrow">ACESSO SEGURO</p>
     <h1>Entre no seu banco digital.</h1>
     <p class="muted">Use seu CPF e sua senha para acessar o Quantium Bank.</p>
@@ -12,7 +13,7 @@
         </label>
         <input type="hidden" name="cpf" data-cpf-value>
         <label>Senha<input name="senha" type="password" maxlength="128" data-password-input autocomplete="current-password" required></label>
-        <button class="primary" type="submit">Entrar</button>
+        <button class="primary button-wide" type="submit">Entrar <span aria-hidden="true">→</span></button>
     </form>
     <p class="muted">Ainda não possui conta? <a href="{{ url_for('register') }}">Cadastre-se</a></p>
 </section>

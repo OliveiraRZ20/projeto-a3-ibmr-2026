@@ -85,6 +85,20 @@ document.querySelectorAll('[data-password-toggle]').forEach((button) => {
   });
 });
 
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.querySelectorAll('.metric-card, .balance-highlight').forEach((card) => {
+    card.addEventListener('pointermove', (event) => {
+      const bounds = card.getBoundingClientRect();
+      const rotateX = ((event.clientY - bounds.top) / bounds.height - 0.5) * -2;
+      const rotateY = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
+      card.style.transform = `translateY(-3px) perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+    card.addEventListener('pointerleave', () => {
+      card.style.transform = '';
+    });
+  });
+}
+
 const password = document.querySelector('input[name="senha"]');
 const passwordConfirmation = document.querySelector('input[name="confirmacao_senha"]');
 const passwordMatch = document.querySelector('[data-password-match]');
