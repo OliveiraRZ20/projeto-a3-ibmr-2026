@@ -1,11 +1,11 @@
 import pytest
 
-from app.models import db
+from quantium_bank.models import db
 
 
 @pytest.fixture
 def app():
-    from app import create_app
+    from quantium_bank import create_app
 
     return create_app(
         {

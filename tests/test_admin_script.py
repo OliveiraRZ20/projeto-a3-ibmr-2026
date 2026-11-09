@@ -2,10 +2,11 @@ import sys
 
 import pytest
 
-import admin
-from admin import create_admin_user, promote_user
-from app.models import Usuario, db
-from app.services import create_user
+from quantium_bank.admin_service import create_admin_user, promote_user
+from quantium_bank.cli import admin as cli_admin
+from quantium_bank import __main__ as cli_main
+from quantium_bank.models import Usuario, db
+from quantium_bank.services import create_user
 
 
 def test_promote_user_marks_existing_user_as_admin(app, database):
@@ -51,12 +52,12 @@ def test_create_admin_user_uses_domain_validation(app, database):
 def test_main_handles_unknown_cpf_without_losing_application_context(
     app, monkeypatch, capsys
 ):
-    monkeypatch.setattr(admin, "create_app", lambda _config: app)
+    monkeypatch.setattr(cli_admin, "create_app", lambda _config: app)
     monkeypatch.setattr(
         sys,
         "argv",
-        ["admin.py", "promover", "--cpf", "21718722095"],
+        ["quantium_bank", "admin", "promover", "--cpf", "21718722095"],
     )
 
-    assert admin.main() == 1
+    assert cli_main.main() == 1
     assert "Erro: Usuário não encontrado" in capsys.readouterr().out

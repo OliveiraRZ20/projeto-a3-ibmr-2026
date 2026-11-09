@@ -2,8 +2,8 @@ from decimal import Decimal
 
 import pytest
 
-from app.models import db
-from app.services import create_user, transfer_money
+from quantium_bank.models import db
+from quantium_bank.services import create_user, transfer_money
 
 def user_details(prefix: str):
     return {

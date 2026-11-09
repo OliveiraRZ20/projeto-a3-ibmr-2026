@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
-from app.models import db
-from app.services import create_user
+from quantium_bank.models import db
+from quantium_bank.services import create_user
 
 
 def test_profile_requires_authentication(client):

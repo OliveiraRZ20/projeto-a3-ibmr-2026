@@ -1,7 +1,7 @@
 import pytest
 
-from app.models import db
-from app.services import (
+from quantium_bank.models import db
+from quantium_bank.services import (
     create_user,
     hash_password,
     validate_password,

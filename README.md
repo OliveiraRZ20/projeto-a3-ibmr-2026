@@ -39,25 +39,18 @@ O projeto utiliza uma organização modular, mantendo modelos, regras de negóci
 
 ```text
 .
-├── app/
+├── quantium_bank/
+│   ├── __main__.py           # CLI centralizada do pacote
+│   ├── cli/                  # Adaptadores dos subcomandos
+│   ├── *_service.py          # Operações reutilizáveis dos comandos
 │   ├── models.py             # Modelos Usuario e Transacao
 │   ├── routes.py             # Rotas HTTP e controle de acesso
 │   ├── services.py           # Regras de negócio testáveis
-│   ├── objects/
-│   │   ├── cpf.py             # Objeto de valor CPF
-│   │   ├── data_nascimento.py # Objeto de valor para maioridade
-│   │   ├── email.py           # Objeto de valor para e-mail
-│   │   └── telefone.py        # Objeto de valor para telefone brasileiro
+│   ├── objects/              # Objetos de valor do domínio
 │   ├── templates/            # Páginas HTML e layout base
-│   └── static/
-│       ├── css/style.css     # Estilos da aplicação
-│       └── js/app.js         # Interações auxiliares
+│   └── static/               # CSS e JavaScript compartilhados
 ├── tests/                    # Testes unitários organizados por domínio
 ├── instance/                 # Banco SQLite local, não versionado
-├── run.py                    # Ponto de entrada da aplicação
-├── seed.py                   # Usuários fictícios de demonstração
-├── admin.py                  # Criação e promoção de administradores
-├── reset_db.py               # Recriação controlada do banco
 ├── requirements.txt          # Dependências Python
 └── README.md
 ```
@@ -77,7 +70,7 @@ Após atualizar de uma versão anterior do projeto, recrie o banco local para ap
 as novas colunas do usuário e os dados de demonstração:
 
 ```powershell
-.\.venv\Scripts\python.exe reset_db.py
+.\.venv\Scripts\python.exe -m quantium_bank reset-db
 ```
 
 > O reset remove os dados existentes e deve ser usado apenas no ambiente de desenvolvimento.
@@ -129,7 +122,7 @@ ainda não possui usuários. Para um cadastro manual, mantenha o valor como
 `SEED_USER_COUNT` define a quantidade de usuários gerados pela seed dinâmica,
 com padrão `10`. `SEED_RANDOM_SEED` permite reproduzir a mesma massa de dados
 quando informado. A seed não cria administradores automaticamente; use o
-script `admin.py` para promover ou criar um administrador.
+comando `admin` para promover ou criar um administrador.
 
 O painel administrativo fica disponível em `/admin` apenas para usuários com
 permissão administrativa. Ele é somente leitura e apresenta indicadores,
@@ -139,14 +132,14 @@ de usuários.
 Para promover um usuário existente a administrador:
 
 ```powershell
-.\.venv\Scripts\python.exe admin.py promover --cpf 21618722069
+.\.venv\Scripts\python.exe -m quantium_bank admin promover --cpf 21618722069
 ```
 
 Para criar um novo administrador, informe os dados cadastrais. A senha será
 solicitada de forma oculta no terminal:
 
 ```powershell
-.\.venv\Scripts\python.exe admin.py criar `
+.\.venv\Scripts\python.exe -m quantium_bank admin criar `
   --nome "Nome do Administrador" `
   --cpf 21618722069 `
   --email admin@quantium.test `
@@ -160,7 +153,7 @@ não salva a senha em texto puro.
 ## Executando a aplicação
 
 ```powershell
-.\.venv\Scripts\python.exe run.py
+.\.venv\Scripts\python.exe -m quantium_bank run
 ```
 
 A aplicação ficará disponível em:
@@ -174,7 +167,7 @@ http://127.0.0.1:5000
 Para criar os usuários fictícios manualmente:
 
 ```powershell
-.\.venv\Scripts\python.exe -m seed
+.\.venv\Scripts\python.exe -m quantium_bank seed
 ```
 
 Os dados são gerados dinamicamente, com CPFs válidos, nomes, e-mails,
@@ -189,7 +182,7 @@ em desenvolvimento.
 Para apagar e recriar o banco com os dados demonstrativos:
 
 ```powershell
-.\.venv\Scripts\python.exe reset_db.py
+.\.venv\Scripts\python.exe -m quantium_bank reset-db
 ```
 
 > O reset remove os dados existentes. Use apenas em desenvolvimento.
@@ -205,6 +198,7 @@ Os testes são unitários e estão separados por responsabilidade:
 - `test_seed.py`: geração dinâmica, unicidade e idempotência da seed.
 - `test_admin.py`: autorização e consultas do painel administrativo.
 - `test_admin_script.py`: criação e promoção de administradores.
+- `test_cli.py`: registro e validação dos subcomandos do pacote.
 - `test_formatting.py`: formatação de CPF e valores monetários.
 
 Execute todos com:

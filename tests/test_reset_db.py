@@ -1,5 +1,5 @@
-from app import create_app
-from app.models import db
+from quantium_bank import create_app
+from quantium_bank.models import db
 
 
 def test_reset_flow_recreates_schema_before_seeding():

@@ -5,9 +5,9 @@ from decimal import Decimal
 
 from faker import Faker
 
-from app import create_app
-from app.models import Usuario, db
-from app.services import create_user
+from . import create_app
+from .models import Usuario, db
+from .services import create_user
 
 DEFAULT_USER_COUNT = 10
 MAX_USER_COUNT = 1000
@@ -112,8 +112,13 @@ def seed_demo_users(
     return inserted
 
 
-if __name__ == "__main__":
+def run_seed() -> int:
     app = create_app({"SEED_DEMO_DATA": False})
     with app.app_context():
         count = int(app.config["SEED_USER_COUNT"])
-        print(f"{seed_demo_users(count=count, random_seed=app.config['SEED_RANDOM_SEED'])} usuários criados.")
+        inserted = seed_demo_users(
+            count=count,
+            random_seed=app.config["SEED_RANDOM_SEED"],
+        )
+        print(f"{inserted} usuários criados.")
+        return inserted

@@ -2,9 +2,9 @@ from datetime import date, timedelta
 
 import pytest
 
-from app.objects.data_nascimento import DataNascimento
-from app.objects.email import Email
-from app.objects.telefone import Telefone
+from quantium_bank.objects.data_nascimento import DataNascimento
+from quantium_bank.objects.email import Email
+from quantium_bank.objects.telefone import Telefone
 
 
 def test_email_normalizes_and_validates():

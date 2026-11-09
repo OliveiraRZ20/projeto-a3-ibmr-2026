@@ -1,6 +1,6 @@
 import pytest
 
-from app.objects.cpf import CPF
+from quantium_bank.objects.cpf import CPF
 
 
 def test_cpf_validates_and_normalizes():

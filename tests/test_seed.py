@@ -1,7 +1,7 @@
 import pytest
 
-from app.models import Usuario, db
-from seed import seed_demo_users
+from quantium_bank.models import Usuario, db
+from quantium_bank.seed_service import seed_demo_users
 
 
 def test_dynamic_seed_creates_unique_valid_users(app, database):

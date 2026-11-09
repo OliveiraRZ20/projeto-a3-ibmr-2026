@@ -85,7 +85,7 @@ def create_app(test_config: dict | None = None) -> Flask:
             from .models import Usuario
 
             if not Usuario.query.first():
-                from seed import seed_demo_users
+                from .seed_service import seed_demo_users
 
                 seed_demo_users(
                     count=app.config["SEED_USER_COUNT"],

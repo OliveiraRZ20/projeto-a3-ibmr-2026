@@ -1,7 +1,7 @@
 from decimal import Decimal
 
-from app.models import db
-from app.services import create_user, transfer_money
+from quantium_bank.models import db
+from quantium_bank.services import create_user, transfer_money
 
 
 def _create_user(name, cpf, email, phone, is_admin=False, saldo="0.00"):
