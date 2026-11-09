@@ -48,6 +48,13 @@ def _parse_filter_date(value: str) -> datetime | None:
         raise ValueError("Data de filtro inválida.")
 
 
+def _parse_required_filter_date(value: str) -> datetime:
+    parsed = _parse_filter_date(value)
+    if parsed is None:
+        raise ValueError("Data de filtro inválida.")
+    return parsed
+
+
 def register_routes(app: Flask) -> None:
     @app.get("/")
     def index():
@@ -182,12 +189,13 @@ def register_routes(app: Flask) -> None:
         try:
             if request.args.get("desde"):
                 query = query.filter(
-                    Usuario.created_at >= _parse_filter_date(request.args["desde"])
+                    Usuario.created_at
+                    >= _parse_required_filter_date(request.args["desde"])
                 )
             if request.args.get("ate"):
                 query = query.filter(
                     Usuario.created_at
-                    < _parse_filter_date(request.args["ate"]).replace(
+                    < _parse_required_filter_date(request.args["ate"]).replace(
                         hour=23, minute=59, second=59
                     )
                 )
@@ -230,12 +238,13 @@ def register_routes(app: Flask) -> None:
         try:
             if request.args.get("desde"):
                 query = query.filter(
-                    Transacao.data_hora >= _parse_filter_date(request.args["desde"])
+                    Transacao.data_hora
+                    >= _parse_required_filter_date(request.args["desde"])
                 )
             if request.args.get("ate"):
                 query = query.filter(
                     Transacao.data_hora
-                    < _parse_filter_date(request.args["ate"]).replace(
+                    < _parse_required_filter_date(request.args["ate"]).replace(
                         hour=23, minute=59, second=59
                     )
                 )

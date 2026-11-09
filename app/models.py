@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import CheckConstraint, ForeignKey, Numeric, String, Index
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
 
@@ -14,64 +14,61 @@ class Usuario(db.Model):
         CheckConstraint("saldo >= 0", name="ck_usuario_saldo_nao_negativo"),
     )
 
-    id = db.Column(
-        db.Integer,
+    id: Mapped[int] = mapped_column(
         primary_key=True,
         comment="Identificador único do usuário.",
     )
-    nome = db.Column(
+    nome: Mapped[str] = mapped_column(
         String(100),
         nullable=False,
         comment="Nome completo normalizado do usuário.",
     )
-    cpf = db.Column(
+    cpf: Mapped[str] = mapped_column(
         String(11),
         nullable=False,
         unique=True,
         index=True,
         comment="CPF normalizado, sem pontuação, usado na autenticação.",
     )
-    email = db.Column(
+    email: Mapped[str] = mapped_column(
         String(254),
         nullable=False,
         unique=True,
         index=True,
         comment="Endereço de e-mail normalizado do usuário.",
     )
-    telefone = db.Column(
+    telefone: Mapped[str] = mapped_column(
         String(11),
         nullable=False,
         comment="Número de celular brasileiro normalizado, com DDD e sem pontuação.",
     )
-    data_nascimento = db.Column(
-        db.Date,
+    data_nascimento: Mapped[date] = mapped_column(
         nullable=False,
         comment="Data de nascimento do usuário maior de idade.",
     )
-    senha = db.Column(
+    senha: Mapped[str] = mapped_column(
         String(60),
         nullable=False,
         comment="Hash BCrypt da senha do usuário.",
     )
-    is_admin = db.Column(
-        db.Boolean,
+    is_admin: Mapped[bool] = mapped_column(
         nullable=False,
         default=False,
         comment="Indica se o usuário pode consultar o painel administrativo.",
     )
-    saldo = db.Column(
+    saldo: Mapped[Decimal] = mapped_column(
         Numeric(12, 2),
         nullable=False,
         default=Decimal("0.00"),
         comment="Saldo monetário atual da conta.",
     )
-    created_at = db.Column(
+    created_at: Mapped[datetime] = mapped_column(
         db.DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
         comment="Data e hora de criação do usuário, armazenada em UTC.",
     )
-    updated_at = db.Column(
+    updated_at: Mapped[datetime] = mapped_column(
         db.DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
@@ -101,13 +98,13 @@ class Usuario(db.Model):
         self.saldo = saldo
         self.is_admin = is_admin
 
-    transacoes_enviadas = relationship(
+    transacoes_enviadas: Mapped[list["Transacao"]] = relationship(
         "Transacao",
         foreign_keys="Transacao.conta_origem_id",
         back_populates="origem",
         passive_deletes=True,
     )
-    transacoes_recebidas = relationship(
+    transacoes_recebidas: Mapped[list["Transacao"]] = relationship(
         "Transacao",
         foreign_keys="Transacao.conta_destino_id",
         back_populates="destino",
@@ -127,29 +124,26 @@ class Transacao(db.Model):
         Index("ix_transacao_destino", "conta_destino_id"),
     )
 
-    id = db.Column(
-        db.Integer,
+    id: Mapped[int] = mapped_column(
         primary_key=True,
         comment="Identificador único da transação.",
     )
-    conta_origem_id = db.Column(
-        db.Integer,
+    conta_origem_id: Mapped[int] = mapped_column(
         ForeignKey("usuario.id", ondelete="RESTRICT"),
         nullable=False,
         comment="ID do usuário que enviou o valor.",
     )
-    conta_destino_id = db.Column(
-        db.Integer,
+    conta_destino_id: Mapped[int] = mapped_column(
         ForeignKey("usuario.id", ondelete="RESTRICT"),
         nullable=False,
         comment="ID do usuário que recebeu o valor.",
     )
-    valor = db.Column(
+    valor: Mapped[Decimal] = mapped_column(
         Numeric(12, 2),
         nullable=False,
         comment="Valor positivo transferido entre as contas.",
     )
-    data_hora = db.Column(
+    data_hora: Mapped[datetime] = mapped_column(
         db.DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
@@ -168,12 +162,12 @@ class Transacao(db.Model):
         self.conta_destino_id = conta_destino_id
         self.valor = valor
 
-    origem = relationship(
+    origem: Mapped["Usuario"] = relationship(
         "Usuario",
         foreign_keys=[conta_origem_id],
         back_populates="transacoes_enviadas",
     )
-    destino = relationship(
+    destino: Mapped["Usuario"] = relationship(
         "Usuario",
         foreign_keys=[conta_destino_id],
         back_populates="transacoes_recebidas",
